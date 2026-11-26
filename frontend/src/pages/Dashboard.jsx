@@ -36,6 +36,7 @@ export default function Dashboard() {
 
   const [reminders, setReminders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState('');
 
   // State untuk form modal (tambah / edit)
@@ -115,6 +116,22 @@ export default function Dashboard() {
     setIsFormOpen(true);
   }
 
+  async function handleManualRefresh() {
+    setIsRefreshing(true);
+    try {
+      const data = await getReminders();
+      setReminders(data || []);
+      setError('');
+      showToast('Data pengingat berhasil diperbarui!', 'success');
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message || 'Gagal memperbarui data';
+      setError(msg);
+      showToast(msg, 'error');
+    } finally {
+      setIsRefreshing(false);
+    }
+  }
+
   function handleOpenEdit(reminder) {
     setEditingReminder(reminder);
     setIsFormOpen(true);
@@ -189,22 +206,21 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center gap-2.5 shrink-0">
-            <Button
-              variant="outline"
-              size="md"
-              icon={RefreshCw}
-              onClick={loadReminders}
-              className="bg-white/10 hover:bg-white/20 text-white border-white/20 focus:ring-white/40"
+            <button
+              type="button"
+              onClick={handleManualRefresh}
+              disabled={isRefreshing}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white/15 hover:bg-white/25 active:bg-white/30 text-white border border-white/25 transition-all cursor-pointer disabled:opacity-50"
               title="Perbarui data"
             >
-              Refresh
-            </Button>
+              <RefreshCw className={`w-4 h-4 shrink-0 ${isRefreshing ? 'animate-spin' : ''}`} />
+              <span>{isRefreshing ? 'Memperbarui...' : 'Refresh'}</span>
+            </button>
             <Button
-              variant="primary"
+              variant="white"
               size="md"
               icon={PlusCircle}
               onClick={handleOpenAdd}
-              className="bg-white text-indigo-900 hover:bg-indigo-50 shadow-none border-none font-semibold"
             >
               Tambah Pengingat
             </Button>

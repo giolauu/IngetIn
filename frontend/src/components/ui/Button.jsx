@@ -31,6 +31,8 @@ export default function Button({
       'text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:ring-slate-400',
     success:
       'bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-500 shadow-sm shadow-emerald-200',
+    white:
+      'bg-white text-indigo-900 hover:bg-indigo-50 focus:ring-white shadow-sm font-semibold',
   };
 
   return (
