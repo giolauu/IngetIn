@@ -1,16 +1,32 @@
-# React + Vite
+# IngatIn — Frontend (React + Vite + Tailwind CSS v4)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Dokumentasi lengkap project dapat dilihat di [README root project](../README.md).
 
-Currently, two official plugins are available:
+## Quick Start Frontend
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+# Masuk ke direktori frontend
+cd frontend
 
-## React Compiler
+# Install dependencies
+npm install
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+# Jalankan server pengembangan
+npm run dev
 
-## Expanding the ESLint configuration
+# Lakukan linting
+npm run lint
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Lakukan kompilasi build produksi
+npm run build
+```
+
+## Tech Stack Frontend
+- **React 19**
+- **Vite 8**
+- **Tailwind CSS v4** (`@tailwindcss/vite`)
+- **React Router DOM v7**
+- **Lucide React** (Icons)
+- **Axios**
+- **Day.js** (Locale Indonesia `id`)
+- **@supabase/supabase-js**
