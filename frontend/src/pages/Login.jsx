@@ -1,18 +1,22 @@
 import { useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { BellRing, Mail, Lock, Eye, EyeOff, AlertCircle, ArrowRight } from 'lucide-react';
+import { BellRing, Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle2, ArrowRight } from 'lucide-react';
 import Button from '../components/ui/Button';
 
 export default function Login() {
   const { session } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Pesan sukses yang dikirim dari halaman Register
+  const successMessage = location.state?.message;
 
   if (session) return <Navigate to="/dashboard" replace />;
 
@@ -45,6 +49,14 @@ export default function Login() {
               Masuk untuk memantau tagihan dan jadwal pentingmu
             </p>
           </div>
+
+          {/* Success Message (dari Register) */}
+          {successMessage && !error && (
+            <div className="flex items-start gap-2.5 p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs sm:text-sm text-emerald-800 leading-snug">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{successMessage}</span>
+            </div>
+          )}
 
           {/* Error Message */}
           {error && (

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { BellRing, Mail, Lock, User, Eye, EyeOff, AlertCircle, CheckCircle2, ArrowRight } from 'lucide-react';
+import { BellRing, Mail, Lock, User, Eye, EyeOff, AlertCircle, ArrowRight } from 'lucide-react';
 import Button from '../components/ui/Button';
 
 export default function Register() {
@@ -13,22 +13,25 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
+  const [registering, setRegistering] = useState(false);
 
-  if (session) return <Navigate to="/dashboard" replace />;
+  // Kalau sudah login, lempar ke dashboard.
+  // Kecuali sedang proses daftar (supaya tidak sempat masuk dashboard).
+  if (session && !registering) return <Navigate to="/dashboard" replace />;
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
-    setInfo('');
 
     if (password.length < 6) {
       return setError('Password minimal 6 karakter');
     }
 
     setLoading(true);
-        const { data, error: signUpError } = await supabase.auth.signUp({
+    setRegistering(true);
+
+    const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -36,16 +39,22 @@ export default function Register() {
         emailRedirectTo: `${window.location.origin}/dashboard`,
       },
     });
-    setLoading(false);
 
     if (signUpError) {
+      setLoading(false);
+      setRegistering(false);
       return setError(signUpError.message);
     }
-    if (data.session) {
-      navigate('/dashboard');
-    } else {
-      setInfo('Pendaftaran berhasil! Cek kotak masuk email Anda untuk konfirmasi, lalu masuk.');
-    }
+
+    // Supabase otomatis login setelah daftar, jadi logout dulu
+    await supabase.auth.signOut();
+    setLoading(false);
+
+    // Pindah ke halaman login dengan pesan sukses
+    navigate('/login', {
+      replace: true,
+      state: { message: 'Pendaftaran berhasil! Silakan masuk dengan akun Anda.' },
+    });
   }
 
   return (
@@ -71,14 +80,6 @@ export default function Register() {
             <div className="flex items-start gap-2.5 p-3.5 bg-red-50 border border-red-200 rounded-xl text-xs sm:text-sm text-red-700 leading-snug">
               <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
               <span>{error}</span>
-            </div>
-          )}
-
-          {/* Info Message */}
-          {info && (
-            <div className="flex items-start gap-2.5 p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs sm:text-sm text-emerald-800 leading-snug">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-              <span>{info}</span>
             </div>
           )}
 
