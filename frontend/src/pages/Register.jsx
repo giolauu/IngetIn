@@ -28,10 +28,13 @@ export default function Register() {
     }
 
     setLoading(true);
-    const { data, error: signUpError } = await supabase.auth.signUp({
+        const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { name } },
+      options: {
+        data: { name },
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+      },
     });
     setLoading(false);
 
